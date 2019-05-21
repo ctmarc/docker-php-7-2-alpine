@@ -9,6 +9,7 @@ Alpine PHP Docker Image with the following additional libraries:
 * intl
 * json
 * mbstring
+* memcached
 * opcache
 * pdo
 * pdo_mysql
