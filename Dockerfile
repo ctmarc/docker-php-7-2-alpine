@@ -2,9 +2,8 @@ FROM php:7.2-fpm-alpine
 
 RUN docker-php-source extract && \
 # dependencies
-apk add --no-cache --virtual .build-deps zlib-dev icu-dev yaml-dev gcc g++ libtool make freetype-dev libpng-dev libjpeg-turbo-dev imagemagick-dev libxml2-dev && \
-  apk add --no-cache --virtual .imagick-runtime-deps imagemagick && \
-  apk add --update --no-cache autoconf freetype libpng libxml2 libjpeg-turbo icu yaml && \
+apk add --no-cache --virtual .build-deps zlib-dev icu-dev yaml-dev gcc g++ libtool make freetype-dev libpng-dev libjpeg-turbo-dev imagemagick-dev libxml2-dev libmemcached-dev cyrus-sasl-dev && \
+  apk add --no-cache --virtual .runtime-deps imagemagick autoconf freetype libpng libxml2 libjpeg-turbo icu yaml libmemcached-libs zlib && \
   export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" && \
   # pecl extensions
   docker-php-ext-configure gd \
@@ -18,6 +17,18 @@ apk add --no-cache --virtual .build-deps zlib-dev icu-dev yaml-dev gcc g++ libto
   docker-php-ext-enable redis && \
   pecl install yaml && \
   docker-php-ext-enable yaml && \
+  pecl install igbinary && \
+  ( \
+    pecl install --nobuild memcached && \
+    cd "$(pecl config-get temp_dir)/memcached" && \
+    phpize && \
+    ./configure --enable-memcached-igbinary && \
+    make -j$(nproc) && \
+    make install && \
+    cd /tmp/ \
+  ) && \
+  docker-php-ext-enable igbinary && \
+  docker-php-ext-enable memcached && \
   pecl install imagick-3.4.3 && \
   # out-of-the-box extensions
   docker-php-ext-enable imagick && \
