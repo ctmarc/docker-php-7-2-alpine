@@ -3,7 +3,8 @@ FROM php:7.2-fpm-alpine
 RUN docker-php-source extract && \
 # dependencies
 apk add --no-cache --virtual .build-deps zlib-dev icu-dev yaml-dev gcc g++ libtool make freetype-dev libpng-dev libjpeg-turbo-dev imagemagick-dev libxml2-dev libmemcached-dev cyrus-sasl-dev && \
-  apk add --no-cache --virtual .runtime-deps imagemagick autoconf freetype libpng libxml2 libjpeg-turbo icu yaml libmemcached-libs zlib && \
+  apk add --no-cache --virtual .runtime-deps imagemagick autoconf freetype libpng libxml2 libjpeg-turbo icu yaml libmemcached-libs zlib rsync openssh-client && \
+  apk add --no-cache php7-xdebug --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ && \
   export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" && \
   # pecl extensions
   docker-php-ext-configure gd \
