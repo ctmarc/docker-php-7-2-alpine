@@ -51,3 +51,5 @@ apk add --no-cache --virtual .build-deps zlib-dev icu-dev yaml-dev gcc g++ libto
   # clean up
   apk del .build-deps && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/* && \
   docker-php-source delete
+
+CMD ["php-fpm", "--allow-to-run-as-root"]
